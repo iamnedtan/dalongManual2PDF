@@ -18,11 +18,46 @@ name, and a decoy `#b` "Box Open" gallery on the same page. If the live markup
 turns out to differ, the live page wins — re-capture the fixtures from it and
 rerun the tests.
 
-Please run the following once on a machine with real access.
+## The quick way: one command
 
-## Setup
+On a machine that can reach dalong.net, with Google Chrome installed:
 
-1. `chrome://extensions` → Developer mode → **Load unpacked** → this directory.
+```sh
+npm install
+npm run test:live
+```
+
+This loads the extension into your real Chrome, runs the export against both
+pages from the handoff, then re-fetches every scan straight from dalong.net and
+checks the PDF against it — page count, each page's exact pixel dimensions, and
+that pages 1..N really are scans 1..N in order. Expected output:
+
+```
+fm03 (Full Mechanics Barbatos Lupus Rex)
+      -> 18 images, "Full Mechanics Gundam Barbatos Lupus Rex", saves as Full-Mechanics_Gundam-Barbatos-Lupus-Rex-manual.pdf
+  ok  fm03 (…): the extension finds the Manual section
+  ok  fm03 (…): the export completes and Chrome saves the PDF
+  ok  fm03 (…): the scans really are JPEGs
+  ok  fm03 (…): every page is its scan's exact pixel size
+  ok  fm03 (…): pages 1..18 are the scans, in order
+      saved: /tmp/dalong-live-XXXX/Full-Mechanics_Gundam-Barbatos-Lupus-Rex-manual.pdf
+… same for mg100, 20 pages …
+
+10/10 checks passed
+```
+
+`HEADED=1 npm run test:live` shows the browser while it works, and
+`npm run test:live -- <url>` points it at any other review page. It only reads
+from dalong.net; the PDFs go to a temp directory whose path it prints.
+
+The runner's own logic was verified against the fixture site (10/10), so a
+failure here means the live markup differs from the handoff — see the table at
+the bottom of this file.
+
+## The slow way: click through it yourself
+
+Worth doing once anyway, to eyeball the actual scans. First:
+`chrome://extensions` → Developer mode → **Load unpacked** → this directory.
 
 ## Test 1 — fm03 (18 images, empty kit-code)
 
@@ -52,6 +87,7 @@ Please run the following once on a machine with real access.
    `p/mg100_mb0001.JPG` … page 20 = `p/mg100_mb0020.JPG`.
 
 ## Test 3 — a page with no Manual section
+
 
 1. Go to any dalong.net page that has no `Manual` section (e.g. a review's main
    `_e.htm` page rather than its `_i_e.htm` info page).

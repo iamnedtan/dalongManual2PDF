@@ -76,22 +76,32 @@ There is no background activity: everything happens on an explicit click.
 ## Tests
 
 ```sh
-npm test        # unit: caption parsing, ordering, filenames, PDF assembly
-npm run test:e2e   # end-to-end in real Chromium (needs `npm install` for Playwright)
+npm install        # Playwright, for the two browser runs
+npm test           # unit: caption parsing, ordering, filenames, PDF assembly
+npm run test:e2e   # end-to-end against a local stand-in for dalong.net
+npm run test:live  # end-to-end against the real dalong.net, in your Chrome
 ```
 
-The end-to-end run builds a local stand-in for www.dalong.net (fixture review
-pages plus real JPEGs at known sizes), serves it over HTTPS, and launches
-Chromium with `--host-resolver-rules=MAP www.dalong.net 127.0.0.1:<port>` and
-the unpacked extension loaded. So the extension runs against genuine
+`test:e2e` builds a local stand-in for www.dalong.net (fixture review pages plus
+real JPEGs at known sizes), serves it over HTTPS, and launches Chromium with
+`--host-resolver-rules=MAP www.dalong.net 127.0.0.1:<port>` and the unpacked
+extension loaded. So the extension runs against genuine
 `https://www.dalong.net/...` URLs under its real `host_permissions`, with no
 test-only changes to the extension itself. It then checks the saved PDF's page
 count, per-page dimensions and the byte-order of the embedded scans.
 
+`test:live` does the same against the real site in your installed Google Chrome,
+re-fetching each scan straight from dalong.net to compare against the PDF. It
+needs network access, which the environment this was built in did not have —
+**so that run has never been executed.** Everything else has.
+
+```sh
+HEADED=1 npm run test:live                  # watch it happen
+npm run test:live -- <review-page-url>...   # check other pages
+```
+
 **The fixture pages are reconstructions of the markup documented in the
-handoff, not captures of the live site** — the sandbox this was built in has no
-network access to dalong.net. See `MANUAL-TESTING.md` for the one verification
-pass that still needs a machine with real access.
+handoff, not captures of the live site.** See `MANUAL-TESTING.md`.
 
 ## Non-goals
 

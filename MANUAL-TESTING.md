@@ -20,12 +20,18 @@ rerun the tests.
 
 ## The quick way: one command
 
-On a machine that can reach dalong.net, with Google Chrome installed:
+On a machine that can reach dalong.net, with Google Chrome installed. **The
+code is on the `claude/new-session-j13n7i` branch, not `main`** — a plain
+`git pull` on `main` gets you the README and nothing else:
 
 ```sh
+git fetch origin claude/new-session-j13n7i
+git switch claude/new-session-j13n7i
 npm install
 npm run test:live
 ```
+
+Works the same in cmd, PowerShell and a POSIX shell.
 
 This loads the extension into your real Chrome, runs the export against both
 pages from the handoff, then re-fetches every scan straight from dalong.net and
@@ -46,7 +52,7 @@ fm03 (Full Mechanics Barbatos Lupus Rex)
 10/10 checks passed
 ```
 
-`HEADED=1 npm run test:live` shows the browser while it works, and
+`npm run test:live -- --headed` shows the browser while it works, and
 `npm run test:live -- <url>` points it at any other review page. It only reads
 from dalong.net; the PDFs go to a temp directory whose path it prints.
 

@@ -82,6 +82,8 @@ npm run test:e2e   # end-to-end against a local stand-in for dalong.net
 npm run test:live  # end-to-end against the real dalong.net, in your Chrome
 ```
 
+All four work on Windows, macOS and Linux.
+
 `test:e2e` builds a local stand-in for www.dalong.net (fixture review pages plus
 real JPEGs at known sizes), serves it over HTTPS, and launches Chromium with
 `--host-resolver-rules=MAP www.dalong.net 127.0.0.1:<port>` and the unpacked
@@ -96,7 +98,7 @@ needs network access, which the environment this was built in did not have —
 **so that run has never been executed.** Everything else has.
 
 ```sh
-HEADED=1 npm run test:live                  # watch it happen
+npm run test:live -- --headed               # watch it happen
 npm run test:live -- <review-page-url>...   # check other pages
 ```
 

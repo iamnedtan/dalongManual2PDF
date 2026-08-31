@@ -2,10 +2,13 @@
 // the extension in your real, installed Google Chrome against the live
 // www.dalong.net, and checks the PDFs it produces against the actual scans.
 //
-//   npm run test:live               # headless Chrome
-//   HEADED=1 npm run test:live      # watch it happen
-//   npm run test:live -- <url>...   # check other review pages instead
-//   CHANNEL=chromium npm run test:live   # use a Playwright build instead of Chrome
+//   npm run test:live                        # headless Chrome
+//   npm run test:live -- --headed            # watch it happen
+//   npm run test:live -- <url>...            # check other review pages instead
+//   npm run test:live -- --channel=chromium  # a Playwright build instead of Chrome
+//
+// Flags rather than environment variables, so the same command works in cmd,
+// PowerShell and a POSIX shell.
 //
 // Unlike test/e2e this needs working network access to dalong.net. It reads the
 // live pages and images but writes nothing back — the PDFs land in a temp
@@ -37,10 +40,17 @@ const DEFAULT_PAGES = [
   },
 ];
 
-const argUrls = process.argv.slice(2).filter((a) => a.startsWith('http'));
+const args = process.argv.slice(2);
+const argUrls = args.filter((a) => a.startsWith('http'));
 const PAGES = argUrls.length
   ? argUrls.map((url) => ({ url, label: url, expect: {} }))
   : DEFAULT_PAGES;
+
+const HEADED = args.includes('--headed') || process.env.HEADED === '1';
+const CHANNEL =
+  args.find((a) => a.startsWith('--channel='))?.slice('--channel='.length) ||
+  process.env.CHANNEL ||
+  'chrome'; // your installed Google Chrome, not a Playwright build
 
 const WORK = fs.mkdtempSync(path.join(os.tmpdir(), 'dalong-live-'));
 const { step, summarize } = makeReporter();
@@ -52,21 +62,20 @@ async function fetchBytes(url) {
 }
 
 async function main() {
-  const headed = process.env.HEADED === '1';
   let browser;
   try {
     browser = await launchWithExtension({
       profileDir: path.join(WORK, 'profile'),
       downloadsDir: path.join(WORK, 'downloads'),
-      // your installed Google Chrome, not a Playwright build
-      channel: process.env.CHANNEL || 'chrome',
-      headless: !headed,
+      channel: CHANNEL,
+      headless: !HEADED,
     });
   } catch (error) {
     console.error(
-      `Could not launch Google Chrome: ${error.message}\n` +
-        'Install Chrome, or run with a Playwright build instead:\n' +
-        '  npx playwright install chromium && CHANNEL=chromium npm run test:live',
+      `Could not launch ${CHANNEL}: ${error.message}\n` +
+        'Install Google Chrome, or use a Playwright build instead:\n' +
+        '  npx playwright install chromium\n' +
+        '  npm run test:live -- --channel=chromium',
     );
     process.exit(1);
   }

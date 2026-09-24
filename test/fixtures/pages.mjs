@@ -125,8 +125,15 @@ export const NO_MANUAL = {
 `,
 };
 
+/** A kit's Review page: no Manual section, which lives on the `_i_e` page. */
+export const REVIEW_PAGE = {
+  path: 'reviews/hg/h193/h193_p_e.htm',
+  html: NO_MANUAL.html,
+  expectedInfoUrl: 'https://www.dalong.net/reviews/hg/h193/h193_i_e.htm',
+};
+
 export function htmlFor(page) {
   return page.html ?? reviewPage(page);
 }
 
-export const PAGES = [FM03, MG100, H59, NO_MANUAL];
+export const PAGES = [FM03, MG100, H59, NO_MANUAL, REVIEW_PAGE];

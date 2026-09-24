@@ -25,7 +25,9 @@ Nothing needs building; `vendor/pdf-lib.min.js` is checked in.
    runs in the background, so closing the popup doesn't cancel it.
 
 If the page has no Manual section, the popup says
-"No Manual section found on this page." and offers nothing else.
+"No Manual section found on this page." and offers nothing else. On a kit's
+Review page (`…_p_e.htm`) it instead offers a button that opens the kit's
+Information page (`…_i_e.htm`), where the Manual section is.
 
 ### Output filename
 

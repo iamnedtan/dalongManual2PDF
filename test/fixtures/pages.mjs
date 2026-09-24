@@ -1,5 +1,5 @@
 // Fixture pages reproducing the dalong.net review-page markup documented in the
-// handoff (section#m > .gallery-grid > a[href][data-caption], and .kit-header).
+// handoff (section#m — or #cm on some pages — > .gallery-grid > a[href][data-caption], and .kit-header).
 //
 // NOTE: these are reconstructions of the documented structure, not captures of
 // the live pages — the sandbox this was built in has no network access to
@@ -14,6 +14,7 @@
  * @param {number} opts.count    number of manual images
  * @param {{grade: string, code: string, name: string}} opts.kit
  * @param {string} opts.title    document title
+ * @param {string} [opts.sectionId] id of the Manual section, 'm' unless given
  * @param {(i: number) => string} [opts.href] override the href for one entry
  */
 export function reviewPage(opts) {
@@ -55,7 +56,7 @@ export function reviewPage(opts) {
   </div>
 </section>
 
-<section class="section" id="m">
+<section class="section" id="${opts.sectionId ?? 'm'}">
   <div class="section-header">
     <h2 class="section-title">&#9654;Manual</h2>
     <a href="#top" class="section-top-link">TOP</a>
@@ -93,6 +94,19 @@ export const MG100 = {
   expectedFilename: 'MG_WD-M01_Gundam-manual.pdf',
 };
 
+/** HGUC Dom / Rick-Dom — 8 manual images in a section with id `cm`, not `m`. */
+export const H59 = {
+  path: 'reviews/hg/h59/h59_i_e.htm',
+  count: 8,
+  prefix: 'h59',
+  infix: 'mb',
+  ext: '.jpg',
+  sectionId: 'cm',
+  kit: { grade: 'HGUC', code: 'MS-09/MS-09R', name: 'Dom / Rick-Dom' },
+  title: 'HGUC Dom / Rick-Dom - Information - Dalong.net',
+  expectedFilename: 'HGUC_MS-09MS-09R_Dom-Rick-Dom-manual.pdf',
+};
+
 /** A review page with no Manual section at all. */
 export const NO_MANUAL = {
   path: 'reviews/hg/hg999/hg999_i_e.htm',
@@ -115,4 +129,4 @@ export function htmlFor(page) {
   return page.html ?? reviewPage(page);
 }
 
-export const PAGES = [FM03, MG100, NO_MANUAL];
+export const PAGES = [FM03, MG100, H59, NO_MANUAL];

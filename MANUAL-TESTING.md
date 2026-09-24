@@ -113,7 +113,7 @@ The most likely divergences, and where to look:
 
 | Symptom | Where |
 | --- | --- |
-| "No Manual section found" on a page that has one | the `section#m .gallery-grid` selector in `src/scrape.js` |
+| "No Manual section found" on a page that has one | the `section#m .gallery-grid` (or `section#cm`, used by some pages) selector in `src/scrape.js` |
 | Wrong page count, or pages out of order | `data-caption` format — `parseCaption` in `src/manual.js` |
 | Wrong filename | `.kit-header` selectors in `src/scrape.js`, `buildFilename` in `src/manual.js` |
 | "Could not download image N … HTTP 403" | the images need referer/cookies; the fetch is in `fetchImages` in `src/pdf.js` |

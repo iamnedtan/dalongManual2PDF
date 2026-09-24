@@ -38,6 +38,11 @@ const DEFAULT_PAGES = [
     label: 'mg100 (MG ∀ Gundam)',
     expect: { count: 20, filename: 'MG_WD-M01_Gundam-manual.pdf' },
   },
+  {
+    url: 'https://www.dalong.net/reviews/hg/h59/h59_i_e.htm',
+    label: 'h59 (HGUC Dom / Rick-Dom, Manual section id "cm")',
+    expect: { count: 8, filename: 'HGUC_MS-09MS-09R_Dom-Rick-Dom-manual.pdf' },
+  },
 ];
 
 const args = process.argv.slice(2);
@@ -114,7 +119,9 @@ async function main() {
     // Re-fetch the scans straight from dalong.net and compare them to the PDF —
     // the extension's own view of the page isn't used for this check.
     const hrefs = await browser.page.evaluate(() =>
-      [...document.querySelectorAll('section#m .gallery-grid a[href]')].map(
+      [...document.querySelectorAll(
+        'section#m .gallery-grid a[href], section#cm .gallery-grid a[href]',
+      )].map(
         (a) => new URL(a.getAttribute('href'), document.baseURI).href,
       ),
     );

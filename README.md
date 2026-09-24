@@ -5,7 +5,7 @@ page's **Manual** section — the run of instruction-manual scans — as a singl
 PDF, one scan per page, in the original order.
 
 Scope is deliberately narrow: dalong.net only, Manual section only. There is no
-pattern detection or gallery heuristic; it targets `section#m .gallery-grid`
+pattern detection or gallery heuristic; it targets `section#m .gallery-grid` (or `section#cm`, used by some pages)
 directly.
 
 ## Install (unpacked)

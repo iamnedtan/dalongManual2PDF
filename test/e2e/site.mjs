@@ -8,7 +8,7 @@ import path from 'node:path';
 import https from 'node:https';
 import { execFileSync } from 'node:child_process';
 import { chromium } from 'playwright';
-import { FM03, MG100, NO_MANUAL, PAGES, htmlFor } from '../fixtures/pages.mjs';
+import { FM03, MG100, H59, NO_MANUAL, PAGES, htmlFor } from '../fixtures/pages.mjs';
 
 /** Page N of a manual gets its own size so page order is checkable from the PDF. */
 export function imageSize(page, index) {
@@ -111,4 +111,4 @@ export async function serve(root, certDir) {
   return { server, port: server.address().port };
 }
 
-export { FM03, MG100, NO_MANUAL };
+export { FM03, MG100, H59, NO_MANUAL };

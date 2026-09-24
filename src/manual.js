@@ -122,6 +122,23 @@ export function displayName(kit, pageTitle) {
   return typeof pageTitle === 'string' && pageTitle.trim() ? pageTitle.trim() : 'this page';
 }
 
+/**
+ * A kit's Review page (`h193_p_e.htm`, or `h193_p.htm` in Japanese) has no
+ * Manual section; that lives on its Information page (`h193_i_e.htm`).
+ * Returns the Information page URL for a Review page URL, otherwise null.
+ */
+export function informationPageUrl(pageUrl) {
+  let url;
+  try {
+    url = new URL(pageUrl);
+  } catch {
+    return null;
+  }
+  const m = /^(.*\/[^/]+_)p((?:_[a-z]+)?\.html?)$/i.exec(url.pathname);
+  if (!m) return null;
+  return `${url.origin}${m[1]}i${m[2]}`;
+}
+
 /** Turn a raw page scrape into everything the export needs. */
 export function buildJob(scrape) {
   const images = orderImages(scrape.entries || []);

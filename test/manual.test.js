@@ -7,6 +7,7 @@ import {
   claimedTotal,
   displayName,
   FALLBACK_FILENAME,
+  informationPageUrl,
   orderImages,
   parseCaption,
   sanitizeField,
@@ -167,4 +168,21 @@ test('buildPdf rejects a file that is not a JPEG or PNG', async () => {
 
 test('buildPdf refuses to make an empty PDF', async () => {
   await assert.rejects(() => buildPdf(PDFLib, []), /No images/);
+});
+
+test('informationPageUrl maps a Review page to its Information page', () => {
+  assert.equal(
+    informationPageUrl('https://www.dalong.net/reviews/hg/h193/h193_p_e.htm'),
+    'https://www.dalong.net/reviews/hg/h193/h193_i_e.htm',
+  );
+  assert.equal(
+    informationPageUrl('https://www.dalong.net/reviews/hg/h193/h193_p.htm#top'),
+    'https://www.dalong.net/reviews/hg/h193/h193_i.htm',
+  );
+});
+
+test('informationPageUrl returns null for pages that are not Review pages', () => {
+  assert.equal(informationPageUrl('https://www.dalong.net/reviews/hg/h193/h193_i_e.htm'), null);
+  assert.equal(informationPageUrl('https://www.dalong.net/'), null);
+  assert.equal(informationPageUrl('not a url'), null);
 });

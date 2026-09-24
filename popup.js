@@ -4,6 +4,7 @@
 const statusEl = document.getElementById('status');
 const exportEl = document.getElementById('export');
 const noteEl = document.getElementById('note');
+const gotoEl = document.getElementById('goto');
 
 let targetTabId = null;
 
@@ -39,6 +40,17 @@ async function init() {
     type: 'inspect',
     tabId: tab.id,
   });
+
+  if (!response?.ok && response?.infoUrl) {
+    setStatus(response.error);
+    gotoEl.hidden = false;
+    gotoEl.focus();
+    gotoEl.addEventListener('click', async () => {
+      await chrome.tabs.update(targetTabId, { url: response.infoUrl });
+      window.close();
+    });
+    return;
+  }
 
   if (!response?.ok) {
     setStatus(response?.error || 'Something went wrong.', { error: true });

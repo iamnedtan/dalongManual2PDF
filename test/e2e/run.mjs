@@ -10,7 +10,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { buildSite, serve, imageSize, FM03, MG100, H59, NO_MANUAL } from './site.mjs';
+import { buildSite, serve, imageSize, FM03, MG100, H59, NO_MANUAL, REVIEW_PAGE } from './site.mjs';
 import { PDFLib } from '../load-pdf-lib.mjs';
 import { embedOffsets, exportFrom, launchWithExtension, makeReporter } from '../harness.mjs';
 
@@ -121,6 +121,15 @@ async function main() {
   await step('a page without a Manual section reports it instead of exporting', () => {
     assert.equal(none.inspect.ok, false);
     assert.match(none.inspect.error, /No Manual section found/);
+    assert.equal(none.inspect.infoUrl, undefined);
+  });
+
+  // ---- a Review page points at its Information page ----------------------
+  const review = await exportFrom(browser, url(REVIEW_PAGE.path));
+
+  await step('a Review page offers its Information page instead', () => {
+    assert.equal(review.inspect.ok, false);
+    assert.equal(review.inspect.infoUrl, REVIEW_PAGE.expectedInfoUrl);
   });
 
   // ---- the popup's own rendering -----------------------------------------

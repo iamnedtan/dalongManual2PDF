@@ -4,7 +4,7 @@
 // that tab -> hand the ordered job to the offscreen document, which downloads
 // the scans and builds the PDF -> we save it with chrome.downloads.
 
-import { buildJob } from './src/manual.js';
+import { buildJob, informationPageUrl } from './src/manual.js';
 import { scrapeManualPage } from './src/scrape.js';
 
 const OFFSCREEN_PATH = 'offscreen.html';
@@ -59,6 +59,12 @@ export async function scrapeTab(tabId) {
 
   const scrape = injection?.result;
   if (!scrape || !scrape.found) {
+    const infoUrl = informationPageUrl(tab.url);
+    if (infoUrl) {
+      const error = new Error('The manual is on this kit\'s Information page, not the Review page.');
+      error.infoUrl = infoUrl;
+      throw error;
+    }
     throw new Error('No Manual section found on this page.');
   }
   const job = buildJob(scrape);
@@ -125,7 +131,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           filename: job.filename,
           displayName: job.displayName,
         }),
-      (error) => sendResponse({ ok: false, error: error.message }),
+      (error) => sendResponse({ ok: false, error: error.message, infoUrl: error.infoUrl }),
     );
     return true;
   }

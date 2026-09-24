@@ -10,7 +10,8 @@
  * `{ found: true, entries, kit, title }` with hrefs already absolute.
  */
 export function scrapeManualPage() {
-  const gallery = document.querySelector('section#m .gallery-grid');
+  // Most pages id the Manual section `m`; some (e.g. HGUC h59) use `cm`.
+  const gallery = document.querySelector('section#m .gallery-grid, section#cm .gallery-grid');
   if (!gallery) return { found: false };
 
   const entries = [];

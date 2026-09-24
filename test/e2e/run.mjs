@@ -10,7 +10,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { buildSite, serve, imageSize, FM03, MG100, NO_MANUAL } from './site.mjs';
+import { buildSite, serve, imageSize, FM03, MG100, H59, NO_MANUAL } from './site.mjs';
 import { PDFLib } from '../load-pdf-lib.mjs';
 import { embedOffsets, exportFrom, launchWithExtension, makeReporter } from '../harness.mjs';
 
@@ -101,6 +101,18 @@ async function main() {
     assert.equal(item.state, 'complete');
     const doc = await PDFLib.PDFDocument.load(fs.readFileSync(item.filename));
     assert.equal(doc.getPageCount(), 20);
+  });
+
+  // ---- h59: Manual section with id `cm` instead of `m` --------------------
+  const h59 = await exportFrom(browser, url(H59.path));
+
+  await step('h59: finds a Manual section whose id is cm', async () => {
+    assert.equal(h59.inspect.ok, true, h59.inspect.error);
+    assert.equal(h59.inspect.count, 8);
+    assert.equal(h59.inspect.filename, H59.expectedFilename);
+    assert.equal(h59.exported?.ok, true, h59.exported?.error);
+    const doc = await PDFLib.PDFDocument.load(fs.readFileSync(h59.items[0].filename));
+    assert.equal(doc.getPageCount(), 8);
   });
 
   // ---- a page with no Manual section -------------------------------------
